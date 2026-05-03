@@ -54,6 +54,18 @@ button.active{border-color:var(--accent);color:var(--accent);background:rgba(200
 .brush-bar .ctrl-row{display:flex;align-items:center;gap:10px}
 #origCanvas.brush-active{cursor:crosshair}
 .brush-btn.active-tool{border-color:var(--accent2)!important;color:var(--accent2)!important;background:rgba(232,93,58,.12)!important}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;z-index:1000}
+.modal-overlay.hidden{display:none}
+.modal-box{background:var(--panel);border:1px solid var(--border);max-width:540px;width:90%;padding:36px 40px;position:relative;box-shadow:0 0 60px rgba(200,146,42,.15)}
+.modal-box h2{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.08em;color:var(--accent);margin-bottom:18px;line-height:1.1}
+.modal-box p{font-size:.82rem;line-height:1.8;color:var(--text);margin-bottom:14px}
+.modal-box ul{font-size:.8rem;line-height:1.9;color:var(--text);padding-left:1.2em;margin-bottom:18px}
+.modal-box li{margin-bottom:4px}
+.modal-box li span.k{color:var(--accent);font-weight:700}
+.modal-dismiss{font-family:'Courier Prime',monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;padding:10px 24px;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;transition:all .15s;margin-top:4px}
+.modal-dismiss:hover{background:rgba(200,146,42,.12)}
+.help-btn{font-family:'Courier Prime',monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;padding:8px 14px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;margin-left:auto}
+.help-btn:hover{border-color:var(--accent);color:var(--accent)}
 </style>
 </head>
 <body>
@@ -67,6 +79,7 @@ button.active{border-color:var(--accent);color:var(--accent);background:rgba(200
   <button id="btn-none" class="active" onclick="setMode('none')">Side by side</button>
   <button id="btn-diff" onclick="setMode('diff')">Diff heatmap</button>
   <button id="btn-reset" onclick="resetControls()">&#8635; Reset</button>
+  <button class="help-btn" onclick="document.getElementById('helpModal').classList.remove('hidden')">? Help</button>
 </div>
 
 <div class="workspace" id="sideBySide">
@@ -175,6 +188,23 @@ button.active{border-color:var(--accent);color:var(--accent);background:rgba(200
     <div class="score-labels"><span>&larr; better than baseline</span><span>worse &rarr;</span></div>
   </div>
   <div class="score-meta" id="scoreMeta">Apply transforms to score<br>similarity between images.</div>
+</div>
+
+<div class="modal-overlay" id="helpModal">
+  <div class="modal-box">
+    <h2>Did Dan Frazier paint over Marta Nael's One Ring?</h2>
+    <p>Or did WotC throw him under the bus by printing work that isn't his?</p>
+    <p>The reprint is suspiciously similar to the original. Would someone like Dan Frazier really copy the reference in such a trivial way? Use this tool to find out how much of a colour grade + paint-over it takes to match the two images and decide for yourself.</p>
+    <ul>
+      <li><span class="k">Global sliders</span> — hue shift, saturation, brightness, blur, black/white point. Apply to the original to try to match the reprint.</li>
+      <li><span class="k">Brush tools</span> — local blur, smear, or paint directly on the original. Left-click to paint.</li>
+      <li><span class="k">Right-click eyedropper</span> — right-click anywhere on the original to sample that colour into the paintbrush.</li>
+      <li><span class="k">Diff heatmap</span> — black = identical, red = max difference. Structural divergence shows up here.</li>
+      <li><span class="k">Delta score</span> — how much your changes moved the error relative to the untouched baseline. Negative = you're getting closer.</li>
+    </ul>
+    <p style="color:var(--muted);font-size:.72rem">Edge pixels are eroded 3px to exclude crop artefacts from scoring.</p>
+    <button class="modal-dismiss" onclick="document.getElementById('helpModal').classList.add('hidden')">Let's investigate &rarr;</button>
+  </div>
 </div>
 
 <script>
